@@ -1,22 +1,30 @@
-from typing import Union
+from typing import Optional, Union
 
 from fastapi import FastAPI
 from fastapi.params import Body
+from pydantic import BaseModel
 
 app = FastAPI()
 
+class Post(BaseModel):
+    title:str
+    content:str
+    published:bool = True
+    rating: Optional[int]=None
+
+    
 
 @app.get("/")
-def read_root():
-    return {"Hello": "World"}
+def root():
+    return {"Message": "Hello World"}
 
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+@app.get("/posts")
+def read_item():
+    return {"data":"This is your posts"}
 
 
 @app.post("/createposts")
-def create_post(payload: dict = Body(...)):
-    # print(payload)
-    return {"New Post": f"title {payload['title']} Contetnt : {payload['content']}"}
+def create_post(post:Post):
+    print(post.model_dump())
+    return {"New Post": post}
