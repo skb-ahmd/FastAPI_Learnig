@@ -21,7 +21,7 @@ my_posts = [{"title": "Title of post 1", "content": "Content of post 1", "id": 1
 
 @app.get("/")
 def root():
-    return {"Message": "Hello world"}
+    return {"Message": "Hello Qorld"}
 
 
 @app.get("/posts")
