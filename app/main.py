@@ -72,17 +72,13 @@ def create_post(post: Post):
 
 @app.get("/posts/{id}")
 def get_post(id: int, response: Response):
-    # cursor.execute(""" Select * from posts where id=%s""", (id))
-    cursor.execute(""" Select * from posts where id=1""")
+    cursor.execute(""" Select * from posts where id=%s""", (str(id),))
     post = cursor.fetchone()
-    print(post)
-    # post = find_post(id)
-    # if not post:
-    #     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-    #                         detail=f"post with id {id} is not exist")
-    #     # response.status_code =status.HTTP_404_NOT_FOUND
-    #     # return {"message":f"post with id {id} is not exist"}
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id {id} is not exist")
     return {"post_details": post}
+
 
 
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
