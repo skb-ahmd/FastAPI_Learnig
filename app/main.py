@@ -1,15 +1,21 @@
 from random import randrange
 from typing import Optional, Union
 
-from fastapi import FastAPI, Response, status, HTTPException
+from fastapi import FastAPI, Response, status, HTTPException,Depends
 from fastapi.params import Body
 from pydantic import BaseModel
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import time
+from sqlalchemy.orm import Session
+from . import models
+from . database import engine,get_db
 # test 1
 
+models.Base.metadata.create_all(bind=engine)
+
 app = FastAPI()
+
 
 
 class Post(BaseModel):
@@ -23,7 +29,7 @@ while True:
 
     try:
         conn = psycopg2.connect(host="localhost", database="fastapi",
-                                user="postgres", password="1234", cursor_factory=RealDictCursor)
+                                user="postgres", password="open", cursor_factory=RealDictCursor)
         cursor = conn.cursor()
         print("Database connection was succesful")
         break
@@ -52,6 +58,10 @@ def find_index_post(id):
 @app.get("/")
 def root():
     return {"Message": "Hello Qorld"}
+
+@app.get("/sqlalchemy")
+def test(db: Session = Depends(get_db)):
+    return{"state":"Success"}
 
 
 @app.get("/posts")
